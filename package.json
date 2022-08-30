@@ -1,0 +1,21 @@
+{
+  "name": "mabna-db",
+  "version": "0.0.1",
+  "description": "A powerfull and light library for store your data and fetch it with queries",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git remote add origin https://github.com/Mabna-db/mabna-db.git"
+  },
+  "keywords": [
+    "lightstorage",
+    "client-side",
+    "client-database",
+    "frontend-database"
+  ],
+  "author": "Mostafa Saadatnia",
+  "license": "ISC"
+}
