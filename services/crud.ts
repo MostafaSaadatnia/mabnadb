@@ -100,25 +100,38 @@ export class CrudService {
     }
 
     private select(query: string): List {
-        let propertiesString = query.split('FROM')[0].trim();
-        let properties: string[] = [];
-        if (propertiesString.includes('*')) {
-            properties.push('*');
+        let columnsString = query.split('FROM')[0].trim();
+        let columns: string[] = [];
+        if (columnsString.includes('*')) {
+            columns.push('*');
         } else {
-            properties = propertiesString.split(',');
+            columns = columnsString.split(',');
         }
-        properties.forEach((peroperty, index) => {
-            properties[index] = peroperty.trim();
+
+        // Trim Columns
+        columns.forEach((column, index) => {
+            columns[index] = column.trim();
         });
+
         const database: string = query
             .split('FROM')[1]
             .split('.')[0].trim();
+    
         const table: string = query
             .split('FROM')[1]
             .split('.')[1]
             .split(' ')[0].trim();
-        this.dbs[database][table].map(person => { person[properties[0]] })
 
-        return [];
+        let result: any[] = [];
+
+        this.dbs[database][table].forEach((element) => {
+            let row = {};
+            columns.forEach((column) => {
+                row[column] = element[column];
+            });
+            result.push(row);
+        });
+
+        return result;
     }
 }
