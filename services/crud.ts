@@ -2,6 +2,14 @@ import { Command } from "../models/command";
 import { List } from "../types/list";
 
 export class CrudService {
+    dbs = {
+        db1: {
+            persons: [
+                { id: '12uax-sadx', name: 'Mostafa', family: 'Saadatnia', age: 29 },
+                { id: '13422uax-sa324dx', name: 'Firoozeh', family: 'Lotfi', age: 29 },
+            ]
+        }
+    };
 
     constructor() { }
 
@@ -36,14 +44,7 @@ export class CrudService {
     query(): List {
         let query = `SELECT name, family FROM db1.persons`;
         query = query.trim();
-        const dbs = {
-            db1: {
-                persons: [
-                    { id: '12uax-sadx', name: 'Mostafa', family: 'Saadatnia', age: 29 },
-                    { id: '13422uax-sa324dx', name: 'Firoozeh', family: 'Lotfi', age: 29 },
-                ]
-            }
-        };
+
 
         return this.commandAdapter(query);
     }
@@ -106,6 +107,17 @@ export class CrudService {
         } else {
             properties = propertiesString.split(',');
         }
+        properties.forEach((peroperty, index) => {
+            properties[index] = peroperty.trim();
+        });
+        const database: string = query
+            .split('FROM')[1]
+            .split('.')[0].trim();
+        const table: string = query
+            .split('FROM')[1]
+            .split('.')[1]
+            .split(' ')[0].trim();
+        this.dbs[database][table].map(person => { person[properties[0]] })
 
         return [];
     }
