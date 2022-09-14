@@ -41,12 +41,8 @@ export class CrudService {
         throw 'This method does not implementeds now!';
     }
 
-    query(): List {
-        let query = `SELECT name, family FROM db1.persons`;
-        query = query.trim();
-
-
-        return this.commandAdapter(query);
+    query(query: string): List {
+        return this.commandAdapter(query.trim());
     }
 
 
@@ -100,37 +96,41 @@ export class CrudService {
     }
 
     private select(query: string): List {
+        let result: any[] = [];
         let columnsString = query.split('FROM')[0].trim();
         let columns: string[] = [];
-        if (columnsString.includes('*')) {
-            columns.push('*');
-        } else {
-            columns = columnsString.split(',');
-        }
 
-        // Trim Columns
-        columns.forEach((column, index) => {
-            columns[index] = column.trim();
-        });
-
+        // Choose database
         const database: string = query
             .split('FROM')[1]
             .split('.')[0].trim();
-    
+
+        // Choose table
         const table: string = query
             .split('FROM')[1]
             .split('.')[1]
             .split(' ')[0].trim();
 
-        let result: any[] = [];
-
-        this.dbs[database][table].forEach((element) => {
-            let row = {};
-            columns.forEach((column) => {
-                row[column] = element[column];
+        if (columnsString.includes('*')) {
+            columns.push('*');
+            // Fill the result
+            result = this.dbs[database][table];
+        }
+        else {
+            columns = columnsString.split(',');
+            // Trim Columns
+            columns.forEach((column, index) => {
+                columns[index] = column.trim();
             });
-            result.push(row);
-        });
+            // Fill the result
+            this.dbs[database][table].forEach((element) => {
+                let row = {};
+                columns.forEach((column) => {
+                    row[column] = element[column];
+                });
+                result.push(row);
+            });
+        }
 
         return result;
     }
