@@ -1,4 +1,4 @@
-export enum LogicalOperators {
+export enum LogicalOperator {
     ADD_EQUALS = '+=',
     SUBTRACT_EQUALS = '-=',
     MULTIPLY_EQUALS = '*=',

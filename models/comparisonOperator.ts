@@ -1,4 +1,4 @@
-export enum ComparisonOperators {
+export enum ComparisonOperator {
     EQUAL_TO = '=',
     GREATER_THAN = '>',
     LESS_THAN = '<',
