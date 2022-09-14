@@ -1,3 +1,5 @@
+import { List } from "../types/list";
+
 export class CrudService {
 
     constructor() { }
@@ -28,5 +30,22 @@ export class CrudService {
 
     destroy(): unknown {
         throw 'This method does not implementeds now!';
+    }
+
+    query(): List {
+        let query = `SELECT name, family FROM db1.persons`;
+        query = query.trim();
+        const dbs = {
+            db1: {
+                persons: [
+                    { id: '12uax-sadx', name: 'Mostafa', family: 'Saadatnia', age: 29 },
+                    { id: '13422uax-sa324dx', name: 'Firoozeh', family: 'Lotfi', age: 29 },
+                ]
+            }
+        };
+
+        const action = query.includes('SELECT');
+        console.log(action);
+        return [];
     }
 }
