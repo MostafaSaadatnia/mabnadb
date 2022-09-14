@@ -1,4 +1,4 @@
-export enum LogicalOperators{
+export enum LogicalOperators {
     All,
     AND,
     ANY,

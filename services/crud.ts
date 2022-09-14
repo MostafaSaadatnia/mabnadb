@@ -1,3 +1,4 @@
+import { Command } from "../models/command";
 import { List } from "../types/list";
 
 export class CrudService {
@@ -44,8 +45,68 @@ export class CrudService {
             }
         };
 
-        const action = query.includes('SELECT');
-        console.log(action);
+        return this.commandAdapter(query);
+    }
+
+
+    private commandAdapter(query: string): List {
+        let command;
+        command = query.split(' ')[0];
+        switch (command) {
+            case Command.ALTER_DATABASE:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            case Command.ALTER_TABLE:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            case Command.CREATE_DATABASE:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            case Command.CREATE_INDEX:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            case Command.CREATE_TABLE:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            case Command.DROP_INDEX:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            case Command.DROP_TABLE:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            case Command.INSERT_INTO:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            case Command.SELECT:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            case Command.UPDATE:
+                console.log(command);
+                return this.select(query.split(Command.SELECT)[1].trim());
+
+            default:
+                throw Error('Query is not valid!');
+        }
+    }
+
+    private select(query: string): List {
+        let propertiesString = query.split('FROM')[0].trim();
+        let properties: string[] = [];
+        if (propertiesString.includes('*')) {
+            properties.push('*');
+        } else {
+            properties = propertiesString.split(',');
+        }
+
         return [];
     }
 }
