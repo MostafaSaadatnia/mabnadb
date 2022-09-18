@@ -1,4 +1,5 @@
 import { Command } from "../models/command";
+import QueryResponse from "../models/queryResponse";
 import { List } from "../types/list";
 
 export class CrudService {
@@ -13,87 +14,46 @@ export class CrudService {
 
     constructor() { }
 
-    index(): unknown {
-        throw 'This method does not implementeds now!';
-    }
-
-    create(): unknown {
-        throw 'This method does not implementeds now!';
-    }
-
-    store(): unknown {
-        throw 'This method does not implementeds now!';
-    }
-
-    show(): unknown {
-        throw 'This method does not implementeds now!';
-    }
-
-    edit(): unknown {
-        throw 'This method does not implementeds now!';
-    }
-
-    update(): unknown {
-        throw 'This method does not implementeds now!';
-    }
-
-    destroy(): unknown {
-        throw 'This method does not implementeds now!';
-    }
-
-    query(query: string): List {
-        return this.commandAdapter(query.trim());
-    }
-
-
-    private commandAdapter(query: string): List {
+    query(query: string): QueryResponse {
         let command;
-        command = query.split(' ')[0];
+        command = query.trim().split(' ')[0];
+
         switch (command) {
             case Command.ALTER_DATABASE:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             case Command.ALTER_TABLE:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             case Command.CREATE_DATABASE:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             case Command.CREATE_INDEX:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             case Command.CREATE_TABLE:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             case Command.DROP_INDEX:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             case Command.DROP_TABLE:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             case Command.INSERT_INTO:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             case Command.SELECT:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             case Command.UPDATE:
-                console.log(command);
-                return this.select(query.split(Command.SELECT)[1].trim());
+                return { data: this.select(query.split(Command.SELECT)[1].trim()), message: 'This is a selected list from the database!' };
 
             default:
                 throw Error('Query is not valid!');
         }
     }
+
 
     private select(query: string): List {
         let result: any[] = [];
