@@ -1,7 +1,7 @@
 import DataBase from "./database";
 
 export default class Table {
-    public name: string = "Table_1";
+    public name: string = "tb1_1";
 
     constructor(name: string, database: DataBase) {
         this.name = `tbl_${name}`;

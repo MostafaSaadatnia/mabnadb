@@ -1,5 +1,5 @@
 export default class DataBase {
-    public name: string = "MabnaDB";
+    public name: string = "db_MabnaDB";
 
     constructor(name: string) {
         this.name = `db_${name}`;
