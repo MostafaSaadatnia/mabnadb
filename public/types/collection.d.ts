@@ -3,11 +3,11 @@ import { IndexableTypeArray } from "./indexable-type";
 import { WhereClause } from "./where-clause";
 import { PromiseExtended } from "./promise-extended";
 import { IndexableType } from "./indexable-type";
-import { Dexie } from "./dexie";
+import { MabnaDB } from "./mabnaDB";
 import { UpdateSpec } from "./update-spec";
 
 export interface Collection<T = any, TKey = IndexableType> {
-    db: Dexie;
+    db: MabnaDB;
     and(filter: (x: T) => boolean): Collection<T, TKey>;
     clone(props?: Object): Collection<T, TKey>;
     count(): PromiseExtended<number>;

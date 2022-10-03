@@ -27,7 +27,7 @@ export interface PromiseExtendedConstructor extends PromiseConstructor {
     resolve(): PromiseExtended<void>;
 }
 
-/** The interface of Dexie.Promise, which basically extends standard Promise with methods:
+/** The interface of MabnaDB.Promise, which basically extends standard Promise with methods:
  *  
  *  finally() - also subject for standardization
  *  timeout() - set a completion timeout

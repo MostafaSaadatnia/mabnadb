@@ -7,6 +7,6 @@ export interface Middleware<TStack extends {stack: string}> {
   name?: string;
 }
 
-export interface DexieStacks {
+export interface MabnaDBStacks {
   dbcore: DBCore;
 }

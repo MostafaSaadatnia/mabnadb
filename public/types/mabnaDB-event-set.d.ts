@@ -1,13 +1,13 @@
-import { DexieEvent } from "./dexie-event";
+import { MabnaDBEvent } from "./mabnaDB-event";
 
-export interface DexieEventSet {
-    (eventName: string): DexieEvent; // To be able to unsubscribe.
+export interface MabnaDBEventSet {
+    (eventName: string): MabnaDBEvent; // To be able to unsubscribe.
 
     addEventType(
         eventName: string,
         chainFunction?: (f1: Function, f2: Function) => Function,
-        defaultFunction?: Function): DexieEvent;
+        defaultFunction?: Function): MabnaDBEvent;
     addEventType(
         events: { [eventName: string]: ('asap' | [(f1: Function, f2: Function) => Function, Function]) })
-        : DexieEvent;
+        : MabnaDBEvent;
 }

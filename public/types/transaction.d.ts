@@ -1,9 +1,9 @@
 import { Table } from "./table";
-import { Dexie } from "./dexie";
+import { MabnaDB } from "./mabnadb";
 import { TransactionEvents } from "./transaction-events";
 
 export interface Transaction {
-    db: Dexie;
+    db: MabnaDB;
     active: boolean;
     mode: IDBTransactionMode;
     //tables: { [type: string]: Table<any, any> }; Deprecated since 2.0. Obsolete from v3.0.
