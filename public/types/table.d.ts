@@ -9,12 +9,12 @@ import { IndexableType } from "./indexable-type";
 import { DBCoreTable } from "./dbcore";
 import { InsertType } from "./insert-type";
 import { KeyPaths, KeyPathValue } from "./keypaths";
-import { Dexie } from "./dexie";
+import { MabnaDB } from "./mabnaDB";
 import { UpdateSpec } from "./update-spec";
 
 export type IDType<T, TKey> = TKey extends keyof T ? T[TKey] : TKey;
 export interface Table<T = any, TKeyPropNameOrKeyType = IndexableType, TOpt = void> {
-    db: Dexie;
+    db: MabnaDB;
     name: string;
     schema: TableSchema;
     hook: TableHooks<T, IDType<T, TKeyPropNameOrKeyType>>;

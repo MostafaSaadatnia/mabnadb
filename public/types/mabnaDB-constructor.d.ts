@@ -1,19 +1,19 @@
-import { Dexie } from "./dexie";
+import { MabnaDB } from "./mabnaDB";
 import { Transaction } from "./transaction";
 import { ThenShortcut } from "./then-shortcut";
 import { TableSchema } from "./table-schema";
 import { IndexSpec } from "./index-spec";
-import { DexieExceptionClasses, DexieErrors } from "./errors";
+import { MabnaDBExceptionClasses, MabnaDBErrors } from "./errors";
 import { PromiseExtendedConstructor } from "./promise-extended";
-import { DexieEventSet } from "./dexie-event-set";
-import { DexieDOMDependencies } from "./dexie-dom-dependencies";
-import { GlobalDexieEvents, ObservabilitySet } from "./db-events";
+import { MabnaDBEventSet } from "./mabnaDB-event-set";
+import { MabnaDBDOMDependencies } from "./mabnaDB-dom-dependencies";
+import { GlobalMabnaDBEvents, ObservabilitySet } from "./db-events";
 import { Observable } from "./observable";
 
 export type ChromeTransactionDurability = 'default' | 'strict' | 'relaxed'
 
-export interface DexieOptions {
-    addons?: Array<(db: Dexie) => void>,
+export interface MabnaDBOptions {
+    addons?: Array<(db: MabnaDB) => void>,
     autoOpen?: boolean,
     indexedDB?: { open: Function },
     IDBKeyRange?: { bound: Function, lowerBound: Function, upperBound: Function },
@@ -22,11 +22,11 @@ export interface DexieOptions {
     chromeTransactionDurability?: ChromeTransactionDurability
 }
 
-export interface DexieConstructor extends DexieExceptionClasses {
-    new(databaseName: string, options?: DexieOptions): Dexie;
-    prototype: Dexie;
+export interface MabnaDBConstructor extends MabnaDBExceptionClasses {
+    new(databaseName: string, options?: MabnaDBOptions): MabnaDB;
+    prototype: MabnaDB;
 
-    addons: Array<(db: Dexie) => void>;
+    addons: Array<(db: MabnaDB) => void>;
     version: number;
     semVer: string;
     currentTransaction: Transaction;
@@ -50,14 +50,14 @@ export interface DexieConstructor extends DexieExceptionClasses {
     minKey: number;
     exists(dbName: string): Promise<boolean>;
     delete(dbName: string): Promise<void>;
-    dependencies: DexieDOMDependencies;
-    default: Dexie; // Work-around for different build tools handling default imports differently.
+    dependencies: MabnaDBDOMDependencies;
+    default: MabnaDB; // Work-around for different build tools handling default imports differently.
 
     Promise: PromiseExtendedConstructor;
     //TableSchema: {}; // Deprecate!
     //IndexSpec: {new():IndexSpec}; //? Deprecate
-    Events: (ctx?: any) => DexieEventSet;
-    on: GlobalDexieEvents;
+    Events: (ctx?: any) => MabnaDBEventSet;
+    on: GlobalMabnaDBEvents;
 
-    errnames: DexieErrors;
+    errnames: MabnaDBErrors;
 }

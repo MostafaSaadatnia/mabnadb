@@ -7,9 +7,9 @@ const enum DBCoreRangeType {
     Never = 4
 }
 
-/** This interface must be identical to the interface with same name in dexie.
- * If DBCore ever gets moved out from dexie we could let it be referenced.
- * We could also be dependent on dexie but it would be a pitty just for this reason.
+/** This interface must be identical to the interface with same name in mabnaDB.
+ * If DBCore ever gets moved out from mabnaDB we could let it be referenced.
+ * We could also be dependent on mabnaDB but it would be a pitty just for this reason.
 */
 interface DBCoreKeyRange {
     readonly type: DBCoreRangeType | number;
