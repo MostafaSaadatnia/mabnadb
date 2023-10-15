@@ -1,4 +1,5 @@
 export interface LinqBuilder {
-    FirstOrDefault(predicate: any): any;
-    Where(predicate: any): any;
+    firstOrDefault(predicate: any): any;
+    where(predicate: any): any;
+    aggregate<U>(accumulator: (acc: U, item: T) => U, initialValue: U): U;
 }
