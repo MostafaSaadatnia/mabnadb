@@ -1,11 +1,6 @@
-import DataBase from "./database";
-
-export default class MabnaDB {
+export default class MabnaDB  {
     public dbVersion: number = 1;
-    public database: DataBase;
-    constructor() { }
+    constructor(databaseName: string, ...args) {
 
-    createDataBase(databaseName: string): void {
-        this.database = new DataBase(databaseName);
     }
 }
