@@ -7,6 +7,7 @@ class MabnaDB {
   private indexes: { [field: string]: { [value: string]: string[] } } = {};
   private changes: { operation: string; document: MabnaDBDocument }[] = [];
   private views: { [name: string]: (doc: MabnaDBDocument | null) => any[] } = {};
+  private isOpen: boolean = true;
 
   put(doc: MabnaDBDocument): void {
     if (!doc._id) {
@@ -472,6 +473,23 @@ class MabnaDB {
     }
 
     return result;
+  }
+
+  close(): void {
+    if (this.isOpen) {
+      // Perform any necessary cleanup or finalization here
+      // For simplicity, we'll just log a message in this example
+      console.log('Closing the database');
+
+      // Optionally, clear data and indexes
+      this.data = {};
+      this.indexes = {};
+
+      // Update state to indicate that the database is closed
+      this.isOpen = false;
+    } else {
+      console.log('The database is already closed');
+    }
   }
 
 
