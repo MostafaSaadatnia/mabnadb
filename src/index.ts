@@ -6,6 +6,7 @@ class MabnaDB {
   private data: { [id: string]: MabnaDBDocument } = {};
   private indexes: { [field: string]: { [value: string]: string[] } } = {};
   private changes: { operation: string; document: MabnaDBDocument }[] = [];
+  private views: { [name: string]: (doc: MabnaDBDocument | null) => any[] } = {};
 
   put(doc: MabnaDBDocument): void {
     if (!doc._id) {
@@ -341,6 +342,25 @@ class MabnaDB {
 
     return reducedResults;
   }
+
+  createView(name: string, mapFn: (doc: MabnaDBDocument) => any, reduceFn: (values: any[]) => any[]): void {
+    this.views[name] = (doc: MabnaDBDocument | null) => this.mapReduce(mapFn, reduceFn);
+  }
+
+  getView(name: string): any[] | null {
+    const view = this.views[name];
+
+    if (view) {
+      return view(null); // Pass null as a placeholder for the map function
+    }
+
+    return null;
+  }
+
+  cleanupViews(): void {
+    this.views = {};
+  }
+
 
 
   destroy(): void {
