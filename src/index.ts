@@ -278,6 +278,29 @@ class MabnaDB {
     return result;
   }
 
+  explainIndex(field: string): { field: string; unique: boolean } | null {
+    const index = this.indexes[field];
+
+    if (index) {
+      const unique = Object.values(index).every((ids) => ids.length === 1);
+      return { field, unique };
+    }
+
+    return null;
+  }
+
+  listIndexes(): string[] {
+    return Object.keys(this.indexes);
+  }
+
+  deleteIndex(field: string): void {
+    if (this.indexes[field]) {
+      delete this.indexes[field];
+    } else {
+      throw new Error(`Index on field ${field} does not exist`);
+    }
+  }
+
   destroy(): void {
     this.data = {};
   }
