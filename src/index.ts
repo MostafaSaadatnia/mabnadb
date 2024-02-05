@@ -1,8 +1,10 @@
 type MabnaDBDocument = { _id: string;[key: string]: any; attachments?: { [key: string]: string } };
 type MabnaDBAttachment = { name: string; data: string };
+type MabnaDIndex = { field: string; unique?: boolean };
 
 class MabnaDB {
   private data: { [id: string]: MabnaDBDocument } = {};
+  private indexes: { [field: string]: { [value: string]: string[] } } = {};
   private changes: { operation: string; document: MabnaDBDocument }[] = [];
 
   put(doc: MabnaDBDocument): void {
@@ -11,6 +13,7 @@ class MabnaDB {
     }
 
     this.data[doc._id] = { ...doc };
+    this.updateIndexes(doc);
     this.changes.push({ operation: 'put', document: { ...doc } });
   }
 
@@ -28,7 +31,11 @@ class MabnaDB {
       throw new Error(`MabnaDBDocument with _id ${doc._id} not found`);
     }
 
+    // Remove old values from indexes before updating the document
+    this.removeIndexes(this.data[doc._id]);
+
     this.data[doc._id] = { ...this.data[doc._id], ...doc };
+    this.updateIndexes(this.data[doc._id]);
     this.changes.push({ operation: 'update', document: { ...doc } });
   }
 
@@ -36,6 +43,9 @@ class MabnaDB {
     if (!this.data[id]) {
       throw new Error(`Document with _id ${id} not found`);
     }
+
+    // Remove values from indexes before removing the document
+    this.removeIndexes(this.data[id]);
 
     delete this.data[id];
     this.changes.push({ operation: 'remove', document: { _id: id } });
@@ -190,6 +200,66 @@ class MabnaDB {
       });
     } else {
       throw new Error(`Attachment with name ${attachmentName} not found for document with _id ${docId}`);
+    }
+  }
+
+  createIndex(index: MabnaDIndex): void {
+    if (!index.field) {
+      throw new Error('Index must have a field specified');
+    }
+
+    if (this.indexes[index.field]) {
+      throw new Error(`Index on field ${index.field} already exists`);
+    }
+
+    this.indexes[index.field] = {};
+    this.buildIndex(index.field);
+  }
+
+  private updateIndexes(doc: MabnaDBDocument): void {
+    for (const field in this.indexes) {
+      const value = doc[field];
+
+      if (value !== undefined) {
+        if (!this.indexes[field][value]) {
+          this.indexes[field][value] = [];
+        }
+
+        this.indexes[field][value].push(doc._id);
+      }
+    }
+  }
+
+  private removeIndexes(doc: MabnaDBDocument): void {
+    for (const field in this.indexes) {
+      const value = doc[field];
+
+      if (value !== undefined && this.indexes[field][value]) {
+        const index = this.indexes[field][value].indexOf(doc._id);
+
+        if (index !== -1) {
+          this.indexes[field][value].splice(index, 1);
+
+          if (this.indexes[field][value].length === 0) {
+            delete this.indexes[field][value];
+          }
+        }
+      }
+    }
+  }
+
+  private buildIndex(field: string): void {
+    for (const id in this.data) {
+      const doc = this.data[id];
+      const value = doc[field];
+
+      if (value !== undefined) {
+        if (!this.indexes[field][value]) {
+          this.indexes[field][value] = [];
+        }
+
+        this.indexes[field][value].push(id);
+      }
     }
   }
 
