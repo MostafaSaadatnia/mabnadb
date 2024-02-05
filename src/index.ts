@@ -417,6 +417,49 @@ class MabnaDB {
     return doc._deleted === true;
   }
 
+  getRevisionDiff(docId: string, fromRev: string, toRev: string): { added: string[]; updated: string[]; deleted: string[] } {
+    const currentDoc = this.data[docId];
+
+    if (!currentDoc) {
+      throw new Error(`Document with _id ${docId} not found`);
+    }
+
+    const fromIndex = this.changes.findIndex((change) => change.document._id === docId && change.document._rev === fromRev);
+    const toIndex = this.changes.findIndex((change) => change.document._id === docId && change.document._rev === toRev);
+
+    if (fromIndex === -1 || toIndex === -1) {
+      throw new Error(`Revisions ${fromRev} or ${toRev} not found for document ${docId}`);
+    }
+
+    const changesBetweenRevisions = this.changes.slice(fromIndex + 1, toIndex + 1);
+
+    const added: string[] = [];
+    const updated: string[] = [];
+    const deleted: string[] = [];
+
+    for (const change of changesBetweenRevisions) {
+      const { operation, document } = change;
+
+      switch (operation) {
+        case 'put':
+          if (!this.data[document._id]) {
+            added.push(document._id);
+          } else {
+            updated.push(document._id);
+          }
+          break;
+        case 'remove':
+          deleted.push(document._id);
+          break;
+        default:
+          // Other operations are ignored for revision diff
+          break;
+      }
+    }
+
+    return { added, updated, deleted };
+  }
+
 
   destroy(): void {
     this.data = {};
