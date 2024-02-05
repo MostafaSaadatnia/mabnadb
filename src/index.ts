@@ -460,6 +460,20 @@ class MabnaDB {
     return { added, updated, deleted };
   }
 
+  bulkGet(docIds: string[]): MabnaDBDocument[] {
+    const result: MabnaDBDocument[] = [];
+
+    for (const docId of docIds) {
+      const document = this.data[docId];
+
+      if (document) {
+        result.push({ ...document });
+      }
+    }
+
+    return result;
+  }
+
 
   destroy(): void {
     this.data = {};
