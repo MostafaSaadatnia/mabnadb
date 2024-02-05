@@ -1,7 +1,7 @@
 {
-  "name": "mabna-db",
+  "name": "mabnadb",
   "version": "1.0.0",
-  "description": "A powerfull and light library for store your data and fetch it with queries",
+  "description": "\"MabnaDB\" is a powerful TypeScript library designed for seamless data storage, retrieval, and management. Drawing inspiration from the efficiency of some well-known offline databases, MabnaDB offers a developer-friendly experience for handling data in your applications. Whether you are building web, mobile, or server applications, MabnaDB simplifies the process of working with data, providing a robust and flexible storage solution.",
   "main": "index.ts",
   "scripts": {
     "build": "tsc",
@@ -12,6 +12,21 @@
     "url": "git remote add origin https://github.com/Mabna-db/mabna-db.git"
   },
   "keywords": [
+    "TypeScript",
+    "Database",
+    "Data Storage",
+    "PouchDB Alternative",
+    "NoSQL",
+    "Lightweight",
+    "Seamless Integration",
+    "Developer-Friendly",
+    "Cross-Platform",
+    "TypeScript Library",
+    "Web Development",
+    "Mobile Development",
+    "Server Applications",
+    "Efficient Data Management",
+    "JSON Documents",
     "lightstorage",
     "client-side",
     "client-database",

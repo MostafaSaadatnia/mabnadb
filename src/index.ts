@@ -179,6 +179,20 @@ class MabnaDB {
     return null;
   }
 
+  deleteAttachment(docId: string, attachmentName: string): void {
+    const document = this.data[docId];
+
+    if (document && document.attachments && document.attachments[attachmentName]) {
+      delete document.attachments[attachmentName];
+      this.changes.push({
+        operation: 'deleteAttachment',
+        document: { _id: docId, attachments: { ...document.attachments } },
+      });
+    } else {
+      throw new Error(`Attachment with name ${attachmentName} not found for document with _id ${docId}`);
+    }
+  }
+
   destroy(): void {
     this.data = {};
   }
