@@ -88,6 +88,28 @@ class MabnaDB {
     this.changes = [];
   }
 
+  replicate(targetDB: MabnaDB): void {
+    const changesToReplicate = this.getChanges();
+
+    changesToReplicate.forEach(({ operation, document }) => {
+      switch (operation) {
+        case 'put':
+          targetDB.put(document);
+          break;
+        case 'update':
+          targetDB.update(document);
+          break;
+        case 'remove':
+          targetDB.remove(document._id);
+          break;
+        default:
+          break;
+      }
+    });
+
+    this.clearChanges();
+  }
+
   destroy(): void {
     this.data = {};
   }
