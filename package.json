@@ -1,9 +1,10 @@
 {
   "name": "mabna-db",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A powerfull and light library for store your data and fetch it with queries",
   "main": "index.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,5 +18,8 @@
     "frontend-database"
   ],
   "author": "Mostafa Saadatnia",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
 }
