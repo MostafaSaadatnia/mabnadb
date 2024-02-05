@@ -380,6 +380,43 @@ class MabnaDB {
     return JSON.stringify({ data: this.data, indexes: this.indexes, views: this.views }).length;
   }
 
+  compact(): void {
+    const compactedData: { [id: string]: MabnaDBDocument } = {};
+    const compactedIndexes: { [field: string]: { [value: string]: string[] } } = {};
+
+    for (const id in this.data) {
+      const doc = this.data[id];
+
+      // Only include documents that haven't been deleted
+      if (!this.isDeleted(doc)) {
+        compactedData[id] = { ...doc };
+      }
+    }
+
+    // Update indexes for the compacted data
+    for (const field in this.indexes) {
+      compactedIndexes[field] = {};
+
+      for (const value in this.indexes[field]) {
+        const ids = this.indexes[field][value];
+        const compactedIds = ids.filter((id) => !!compactedData[id]);
+
+        if (compactedIds.length > 0) {
+          compactedIndexes[field][value] = compactedIds;
+        }
+      }
+    }
+
+    this.data = compactedData;
+    this.indexes = compactedIndexes;
+  }
+
+  private isDeleted(doc: MabnaDBDocument): boolean {
+    // Check if the document has been deleted based on your deletion criteria
+    // In this example, we assume a simple flag "_deleted"
+    return doc._deleted === true;
+  }
+
 
   destroy(): void {
     this.data = {};
