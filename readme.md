@@ -11,6 +11,12 @@
 
 ---
 
+**Installation:**
+```bash
+npm install mabnadb
+```
+---
+
 **Simple Usage:**
 
 ```typescript
