@@ -1,4 +1,5 @@
-type MabnaDBDocument = { _id: string;[key: string]: any };
+type MabnaDBDocument = { _id: string;[key: string]: any; attachments?: { [key: string]: string } };
+type MabnaDBAttachment = { name: string; data: string };
 
 class MabnaDB {
   private data: { [id: string]: MabnaDBDocument } = {};
@@ -151,6 +152,31 @@ class MabnaDB {
     // Clear changes in both databases
     this.clearChanges();
     targetDB.clearChanges();
+  }
+
+  saveAttachment(docId: string, attachment: MabnaDBAttachment): void {
+    if (!this.data[docId]) {
+      throw new Error(`Document with _id ${docId} not found`);
+    }
+
+    const document = this.data[docId];
+
+    if (!document.attachments) {
+      document.attachments = {};
+    }
+
+    document.attachments[attachment.name] = attachment.data;
+    this.changes.push({ operation: 'saveAttachment', document: { _id: docId, attachments: { ...document.attachments } } });
+  }
+
+  getAttachment(docId: string, attachmentName: string): string | null {
+    const document = this.data[docId];
+
+    if (document && document.attachments && document.attachments[attachmentName]) {
+      return document.attachments[attachmentName];
+    }
+
+    return null;
   }
 
   destroy(): void {
