@@ -1,6 +1,7 @@
 type MabnaDBDocument = { _id: string;[key: string]: any; attachments?: { [key: string]: string } };
 type MabnaDBAttachment = { name: string; data: string };
 type MabnaDIndex = { field: string; unique?: boolean };
+type MabnaChangeEvent = { operation: string; document: Document };
 
 class MabnaDB {
   private data: { [id: string]: MabnaDBDocument } = {};
@@ -8,6 +9,7 @@ class MabnaDB {
   private changes: { operation: string; document: MabnaDBDocument }[] = [];
   private views: { [name: string]: (doc: MabnaDBDocument | null) => any[] } = {};
   private isOpen: boolean = true;
+  private eventListeners: { [event: string]: ((event: MabnaChangeEvent) => void)[] } = {};
 
   put(doc: MabnaDBDocument): void {
     if (!doc._id) {
@@ -502,6 +504,24 @@ class MabnaDB {
 
       // Optionally, mark the document as deleted to prevent conflicts with future revisions
       this.changes.push({ operation: 'remove', document: { ...document, _deleted: true } });
+    }
+  }
+
+  on(event: string, listener: (event: MabnaChangeEvent) => void): void {
+    if (!this.eventListeners[event]) {
+      this.eventListeners[event] = [];
+    }
+
+    this.eventListeners[event].push(listener);
+  }
+
+  emit(event: string, eventData: MabnaChangeEvent): void {
+    const listeners = this.eventListeners[event];
+
+    if (listeners) {
+      for (const listener of listeners) {
+        listener(eventData);
+      }
     }
   }
 
