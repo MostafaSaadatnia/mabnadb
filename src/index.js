@@ -26,8 +26,8 @@ class MabnaDB {
     }
     get(id) {
         const doc = this.data[id];
-        return doc ? { ...doc } : null;
         this.logDebug(`Document ${doc._id} was get.`);
+        return doc ? { ...doc } : null;
     }
     update(doc) {
         if (!doc._id) {

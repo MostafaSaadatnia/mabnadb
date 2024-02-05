@@ -51,78 +51,102 @@ console.log(result);
 | --- | --- |
 | **Constructor** | Represents a database document with a mandatory **\_id** field and optional attachments. |
 | **CRUD Operations** | 
-*   **put**: Inserts or updates a document.
-*   **get**: Retrieves a document by its ID.
-*   **update**: Updates a document.
-*   **remove**: Deletes a document.
-*   **getAll**: Retrieves all documents.
-*   **fetchDocument**: Retrieves a document based on custom criteria.
-*   **deleteDocument**: Deletes a document by ID.
-*   **batchCreate**: Inserts multiple documents.
-*   **batchFetch**: Retrieves multiple documents by ID.
+**put**: Inserts or updates a document.
+
+**get**: Retrieves a document by its ID.
+
+**update**: Updates a document.
+
+**remove**: Deletes a document.
+
+**getAll**: Retrieves all documents.
+
+**fetchDocument**: Retrieves a document based on custom criteria.
+
+**deleteDocument**: Deletes a document by ID.
+
+**batchCreate**: Inserts multiple documents.
+
+**batchFetch**: Retrieves multiple documents by ID.
 
  |
 | **Indexing** | 
 
-*   **createIndex**: Creates an index on a specified field.
-*   **queryIndex**: Queries an index for documents based on a field and value.
-*   **explainIndex**: Provides information about an index.
-*   **listIndexes**: Lists all indexes.
-*   **deleteIndex**: Deletes an index.
+**createIndex**: Creates an index on a specified field.
+
+**queryIndex**: Queries an index for documents based on a field and value.
+
+**explainIndex**: Provides information about an index.
+
+**listIndexes**: Lists all indexes.
+
+**deleteIndex**: Deletes an index.
 
  |
 | **Replication and Synchronization** | 
 
-*   **replicate**: Replicates changes to another MabnaDB instance.
-*   **sync**: Bi-directional synchronization between two MabnaDB instances.
+**replicate**: Replicates changes to another MabnaDB instance.
+
+**sync**: Bi-directional synchronization between two MabnaDB instances.
 
  |
 | **Attachments** | 
 
-*   **saveAttachment**: Saves an attachment to a document.
-*   **getAttachment**: Retrieves an attachment from a document.
-*   **deleteAttachment**: Deletes an attachment from a document.
+**saveAttachment**: Saves an attachment to a document.
+
+**getAttachment**: Retrieves an attachment from a document.
+
+**deleteAttachment**: Deletes an attachment from a document.
 
  |
 | **Map-Reduce Views** | 
 
-*   **mapReduce**: Executes a map-reduce operation on all documents.
-*   **createView**: Creates a named view with a map and reduce function.
-*   **getView**: Retrieves the results of a named view.
+**mapReduce**: Executes a map-reduce operation on all documents.
+
+**createView**: Creates a named view with a map and reduce function.
+
+**getView**: Retrieves the results of a named view.
 
  |
 | **Database Information** | **getDatabaseInfo**: Retrieves information about the database. |
 | **Utility Methods** | 
 
-*   **compact**: Compacts the database by removing deleted documents.
-*   **getRevisionDiff**: Retrieves the differences between two revisions of a document.
-*   **bulkGet**: Retrieves multiple documents by ID.
+**compact**: Compacts the database by removing deleted documents.
+
+**getRevisionDiff**: Retrieves the differences between two revisions of a document.
+
+**bulkGet**: Retrieves multiple documents by ID.
 
  |
 | **Event Handling** | 
 
-*   **on**: Adds an event listener.
-*   **emit**: Emits an event with associated data.
+**on**: Adds an event listener.
+
+**emit**: Emits an event with associated data.
 
  |
 | **Task Management** | 
 
-*   **startTask**: Starts a background task.
-*   **completeTask**: Completes a background task.
-*   **failTask**: Fails a background task.
+**startTask**: Starts a background task.
+
+**completeTask**: Completes a background task.
+
+**failTask**: Fails a background task.
 
  |
 | **Asynchronous Operations** | **putAsync**: Asynchronously puts a document. |
 | **Configuration and Debugging** | 
 
-*   **configure**: Configures the database with settings.
-*   **logDebug**: Logs debug messages if debug mode is enabled.
+**configure**: Configures the database with settings.
+
+**logDebug**: Logs debug messages if debug mode is enabled.
 
  |
 | **Plugin System** | 
 
-*   **use**: Adds a plugin to the database.
-*   **applyPlugins**: Applies all registered plugins.
+**use**: Adds a plugin to the database.
+
+**applyPlugins**: Applies all registered plugins.
 
  |
 | **Database Closure** | **close**: Closes the database, performing cleanup if needed. |
