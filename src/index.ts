@@ -1,7 +1,14 @@
 type MabnaDBDocument = { _id: string;[key: string]: any; attachments?: { [key: string]: string } };
 type MabnaDBAttachment = { name: string; data: string };
-type MabnaDIndex = { field: string; unique?: boolean };
-type MabnaChangeEvent = { operation: string; document: Document };
+type MabnaDBIndex = { field: string; unique?: boolean };
+type MabnaDBChangeEvent = { operation: string; document: MabnaDBDocument };
+type MabnaDBTask = { id: number; type: string; status: 'running' | 'completed' | 'failed'; result?: any };
+type MabnaDBSettings = {
+  autoCompact?: boolean;
+  debug?: boolean; // New debug setting
+  // Add other settings as needed
+};
+type MabnaDBPlugin = (db: MabnaDB) => void;
 
 class MabnaDB {
   private data: { [id: string]: MabnaDBDocument } = {};
@@ -9,7 +16,18 @@ class MabnaDB {
   private changes: { operation: string; document: MabnaDBDocument }[] = [];
   private views: { [name: string]: (doc: MabnaDBDocument | null) => any[] } = {};
   private isOpen: boolean = true;
-  private eventListeners: { [event: string]: ((event: MabnaChangeEvent) => void)[] } = {};
+  private eventListeners: { [event: string]: ((event: MabnaDBChangeEvent | MabnaDBTask) => void)[] } = {};
+  private activeTasks: MabnaDBTask[] = [];
+  private taskIdCounter: number = 1;
+  private settings: MabnaDBSettings = {};
+  private plugins: MabnaDBPlugin[] = [];
+
+  constructor() {
+    // Initialize the database
+
+    // Apply plugins during database initialization
+    this.applyPlugins();
+  }
 
   put(doc: MabnaDBDocument): void {
     if (!doc._id) {
@@ -19,11 +37,13 @@ class MabnaDB {
     this.data[doc._id] = { ...doc };
     this.updateIndexes(doc);
     this.changes.push({ operation: 'put', document: { ...doc } });
+    this.logDebug(`Document ${doc._id} was put.`);
   }
 
   get(id: string): MabnaDBDocument | null {
     const doc = this.data[id];
     return doc ? { ...doc } : null;
+    this.logDebug(`Document ${doc._id} was get.`);
   }
 
   update(doc: MabnaDBDocument): void {
@@ -41,6 +61,7 @@ class MabnaDB {
     this.data[doc._id] = { ...this.data[doc._id], ...doc };
     this.updateIndexes(this.data[doc._id]);
     this.changes.push({ operation: 'update', document: { ...doc } });
+    this.logDebug(`Document ${doc._id} was update.`);
   }
 
   remove(id: string): void {
@@ -207,7 +228,7 @@ class MabnaDB {
     }
   }
 
-  createIndex(index: MabnaDIndex): void {
+  createIndex(index: MabnaDBIndex): void {
     if (!index.field) {
       throw new Error('Index must have a field specified');
     }
@@ -494,6 +515,19 @@ class MabnaDB {
     }
   }
 
+  // purge(docId: string): void {
+  //   const document = this.data[docId];
+
+  //   if (document) {
+  //     // Remove the document and all of its revisions
+  //     delete this.data[docId];
+  //     delete this.indexes[docId]; // Assuming you have indexes by docId
+
+  //     // Optionally, mark the document as deleted to prevent conflicts with future revisions
+  //     this.changes.push({ operation: 'remove', document: { ...document, _deleted: true } });
+  //   }
+  // }
+
   purge(docId: string): void {
     const document = this.data[docId];
 
@@ -503,11 +537,11 @@ class MabnaDB {
       delete this.indexes[docId]; // Assuming you have indexes by docId
 
       // Optionally, mark the document as deleted to prevent conflicts with future revisions
-      this.changes.push({ operation: 'remove', document: { ...document, _deleted: true } });
+      this.changes.push({ operation: 'remove', document: { _id: docId, _rev: document._rev, _deleted: true } });
     }
   }
 
-  on(event: string, listener: (event: MabnaChangeEvent) => void): void {
+  on(event: string, listener: (event: MabnaDBChangeEvent | MabnaDBTask) => void): void {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = [];
     }
@@ -515,13 +549,78 @@ class MabnaDB {
     this.eventListeners[event].push(listener);
   }
 
-  emit(event: string, eventData: MabnaChangeEvent): void {
+  emit(event: string, eventData: MabnaDBChangeEvent | MabnaDBTask): void {
     const listeners = this.eventListeners[event];
 
     if (listeners) {
       for (const listener of listeners) {
         listener(eventData);
       }
+    }
+  }
+
+  private startTask(type: string): number {
+    const taskId = this.taskIdCounter++;
+    const newTask: MabnaDBTask = { id: taskId, type, status: 'running' };
+    this.activeTasks.push(newTask);
+    this.emit('taskStart', newTask);
+    return taskId;
+  }
+
+  private completeTask(taskId: number, result?: any): void {
+    const taskIndex = this.activeTasks.findIndex((task) => task.id === taskId);
+
+    if (taskIndex !== -1) {
+      const completedTask = this.activeTasks.splice(taskIndex, 1)[0];
+      completedTask.status = 'completed';
+      completedTask.result = result;
+      this.emit('taskComplete', completedTask);
+    }
+  }
+
+  private failTask(taskId: number, error: Error): void {
+    const taskIndex = this.activeTasks.findIndex((task) => task.id === taskId);
+
+    if (taskIndex !== -1) {
+      const failedTask = this.activeTasks.splice(taskIndex, 1)[0];
+      failedTask.status = 'failed';
+      this.emit('taskFail', failedTask);
+    }
+  }
+
+  // Example of an asynchronous operation
+  async putAsync(document: MabnaDBDocument): Promise<void> {
+    const taskId = this.startTask('put');
+
+    try {
+      // Simulate an asynchronous operation
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      this.put(document);
+      this.completeTask(taskId);
+    } catch (error: any) {
+      this.failTask(taskId, error);
+    }
+  }
+
+  configure(settings: MabnaDBSettings): void {
+    this.settings = { ...this.settings, ...settings };
+  }
+
+  private logDebug(message: string): void {
+    if (this.settings.debug) {
+      console.log(`[MabnaDB Debug] ${message}`);
+    }
+  }
+
+  use(plugin: MabnaDBPlugin): void {
+    this.plugins.push(plugin);
+    plugin(this); // Initialize the plugin with the current instance
+  }
+
+  private applyPlugins(): void {
+    for (const plugin of this.plugins) {
+      plugin(this);
     }
   }
 
