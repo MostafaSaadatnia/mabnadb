@@ -301,6 +301,48 @@ class MabnaDB {
     }
   }
 
+  mapReduce(mapFn: (doc: MabnaDBDocument) => any, reduceFn: (values: any[]) => any[]): any[] {
+    const mappedResults: any[] = [];
+
+    // Apply the map function to all documents
+    for (const id in this.data) {
+      const doc = this.data[id];
+      const mappedResult = mapFn(doc);
+
+      if (mappedResult !== undefined) {
+        mappedResults.push(mappedResult);
+      }
+    }
+
+    // Group mapped results by key
+    const groupedResults: { [key: string]: any[] } = {};
+
+    mappedResults.forEach((result) => {
+      const key = result.key;
+
+      if (!groupedResults[key]) {
+        groupedResults[key] = [];
+      }
+
+      groupedResults[key].push(result.value);
+    });
+
+    // Apply the reduce function to grouped results
+    const reducedResults: any[] = [];
+
+    for (const key in groupedResults) {
+      const values = groupedResults[key];
+      const reducedResult = reduceFn(values);
+
+      if (reducedResult !== undefined) {
+        reducedResults.push({ key, value: reducedResult });
+      }
+    }
+
+    return reducedResults;
+  }
+
+
   destroy(): void {
     this.data = {};
   }
