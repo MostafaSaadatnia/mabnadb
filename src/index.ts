@@ -263,6 +263,21 @@ class MabnaDB {
     }
   }
 
+  queryIndex(field: string, value: any): MabnaDBDocument[] {
+    const result: MabnaDBDocument[] = [];
+
+    if (this.indexes[field] && this.indexes[field][value]) {
+      this.indexes[field][value].forEach((id) => {
+        const doc = this.data[id];
+        if (doc) {
+          result.push({ ...doc });
+        }
+      });
+    }
+
+    return result;
+  }
+
   destroy(): void {
     this.data = {};
   }
