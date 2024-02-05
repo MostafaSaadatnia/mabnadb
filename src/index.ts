@@ -84,6 +84,10 @@ class MabnaDB {
     return [...this.changes];
   }
 
+  clearChanges(): void {
+    this.changes = [];
+  }
+
   destroy(): void {
     this.data = {};
   }
