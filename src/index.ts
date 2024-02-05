@@ -492,6 +492,18 @@ class MabnaDB {
     }
   }
 
+  purge(docId: string): void {
+    const document = this.data[docId];
+
+    if (document) {
+      // Remove the document and all of its revisions
+      delete this.data[docId];
+      delete this.indexes[docId]; // Assuming you have indexes by docId
+
+      // Optionally, mark the document as deleted to prevent conflicts with future revisions
+      this.changes.push({ operation: 'remove', document: { ...document, _deleted: true } });
+    }
+  }
 
   destroy(): void {
     this.data = {};
