@@ -361,6 +361,24 @@ class MabnaDB {
     this.views = {};
   }
 
+  getDatabaseInfo(): {
+    size: number;
+    numDocuments: number;
+    numIndexes: number;
+    numViews: number;
+  } {
+    const size = this.calculateDatabaseSize();
+    const numDocuments = Object.keys(this.data).length;
+    const numIndexes = Object.keys(this.indexes).length;
+    const numViews = Object.keys(this.views).length;
+
+    return { size, numDocuments, numIndexes, numViews };
+  }
+
+  private calculateDatabaseSize(): number {
+    // This is a simple example, you might want to implement a more accurate size calculation
+    return JSON.stringify({ data: this.data, indexes: this.indexes, views: this.views }).length;
+  }
 
 
   destroy(): void {
