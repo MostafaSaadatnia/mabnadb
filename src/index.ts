@@ -59,6 +59,19 @@ class MabnaDB {
     });
   }
 
+  batchFetch(ids: string[]): MabnaDBDocument[] {
+    const result: MabnaDBDocument[] = [];
+
+    ids.forEach((id) => {
+      const doc = this.data[id];
+      if (doc) {
+        result.push({ ...doc });
+      }
+    });
+
+    return result;
+  }
+
   destroy(): void {
     this.data = {};
   }
