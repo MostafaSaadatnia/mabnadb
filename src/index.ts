@@ -1,4 +1,4 @@
-type MabnaDBDocument = { _id: string; [key: string]: any };
+type MabnaDBDocument = { _id: string;[key: string]: any };
 
 class MabnaDB {
   private data: { [id: string]: MabnaDBDocument } = {};
@@ -34,5 +34,32 @@ class MabnaDB {
 
   getAll(): MabnaDBDocument[] {
     return Object.values(this.data).map((doc) => ({ ...doc }));
+  }
+
+  fetchDocument(criteria: (doc: MabnaDBDocument) => boolean): MabnaDBDocument | null {
+    const matchingDocument = Object.values(this.data).find(criteria);
+    return matchingDocument ? { ...matchingDocument } : null;
+  }
+
+  deleteDocument(id: string): void {
+    if (!this.data[id]) {
+      throw new Error(`Document with _id ${id} not found`);
+    }
+
+    delete this.data[id];
+  }
+
+  batchCreate(docs: MabnaDBDocument[]): void {
+    docs.forEach((doc) => {
+      if (!doc._id) {
+        throw new Error('Documents must have an _id');
+      }
+
+      this.data[doc._id] = { ...doc };
+    });
+  }
+
+  destroy(): void {
+    this.data = {};
   }
 }
