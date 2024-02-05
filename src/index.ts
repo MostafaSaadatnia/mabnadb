@@ -2,6 +2,7 @@ type MabnaDBDocument = { _id: string;[key: string]: any };
 
 class MabnaDB {
   private data: { [id: string]: MabnaDBDocument } = {};
+  private changes: { operation: string; document: MabnaDBDocument }[] = [];
 
   put(doc: MabnaDBDocument): void {
     if (!doc._id) {
@@ -9,6 +10,7 @@ class MabnaDB {
     }
 
     this.data[doc._id] = { ...doc };
+    this.changes.push({ operation: 'put', document: { ...doc } });
   }
 
   get(id: string): MabnaDBDocument | null {
@@ -26,10 +28,16 @@ class MabnaDB {
     }
 
     this.data[doc._id] = { ...this.data[doc._id], ...doc };
+    this.changes.push({ operation: 'update', document: { ...doc } });
   }
 
   remove(id: string): void {
+    if (!this.data[id]) {
+      throw new Error(`Document with _id ${id} not found`);
+    }
+
     delete this.data[id];
+    this.changes.push({ operation: 'remove', document: { _id: id } });
   }
 
   getAll(): MabnaDBDocument[] {
@@ -70,6 +78,10 @@ class MabnaDB {
     });
 
     return result;
+  }
+
+  getChanges(): { operation: string; document: MabnaDBDocument }[] {
+    return [...this.changes];
   }
 
   destroy(): void {
