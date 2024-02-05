@@ -110,6 +110,49 @@ class MabnaDB {
     this.clearChanges();
   }
 
+  sync(targetDB: MabnaDB): void {
+    const sourceChanges = this.getChanges();
+    const targetChanges = targetDB.getChanges();
+
+    // Apply changes from the source database to the target database
+    sourceChanges.forEach(({ operation, document }) => {
+      switch (operation) {
+        case 'put':
+          targetDB.put(document);
+          break;
+        case 'update':
+          targetDB.update(document);
+          break;
+        case 'remove':
+          targetDB.remove(document._id);
+          break;
+        default:
+          break;
+      }
+    });
+
+    // Apply changes from the target database to the source database
+    targetChanges.forEach(({ operation, document }) => {
+      switch (operation) {
+        case 'put':
+          this.put(document);
+          break;
+        case 'update':
+          this.update(document);
+          break;
+        case 'remove':
+          this.remove(document._id);
+          break;
+        default:
+          break;
+      }
+    });
+
+    // Clear changes in both databases
+    this.clearChanges();
+    targetDB.clearChanges();
+  }
+
   destroy(): void {
     this.data = {};
   }
